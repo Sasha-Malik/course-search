@@ -3,10 +3,52 @@
     margin: 0px;
 }
 
+#joinRoom{
+    width: 150px;
+    margin-top: 50px;
+    padding: 10px 0px;
+    background-color: #7f5af0;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: 500;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s; 
+    color: #fffffe; 
+}
+
+.videoContainer{
+    display : none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 36px;
+    margin-top:-600px;
+}
 #video{
-    height:480px;
-    width:680px;
-    border:2px solid pink;
+    height:600px;
+    width:1000px;
+    /*display: none;*/
+    /*position: relative;*/
+    /*top:-200px;*/
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+.courseHeadingVideo{
+    font-size: 40px;
+    font-weight: bold;
+    padding: 20px;
+    height: 100px;
+    width: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+    color: #fffffe;
+    margin-top: 50px;
 }
 
 body{
@@ -15,7 +57,7 @@ body{
     font-family: proxima-nova, sans-serif;
 }
 .mainContainer{
-    height: 3400px;
+    height: 2100px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
