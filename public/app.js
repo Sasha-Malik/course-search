@@ -33,8 +33,6 @@ const chartdata = {
 };
 
 
-
-
 const start = () => {
     setTimeout(function () {
         confetti.start()
@@ -81,11 +79,9 @@ const config = {
 };
 
 
-
 socket.on('connect', function () {
     console.log("Connected");
 });
-
 
 let myChart;
 let courseName = "";
@@ -99,13 +95,11 @@ window.addEventListener('load', () => {
         window.history.go(1);
     };
 
-
     let chart = document.getElementById("myChart").getContext("2d");
     myChart = new Chart(
         chart,
         config
     );
-    /*let courseName = "";*/
 
     socket.on('sdata', (data) => {
         if (data.comment == globalText) {
@@ -127,6 +121,7 @@ window.addEventListener('load', () => {
 
             data.courseArray.forEach(e => {
 
+                
                 let child = document.createElement('button');
                 child.classList.add("course");
                 child.innerHTML = e;
@@ -158,10 +153,13 @@ window.addEventListener('load', () => {
 
     btn.addEventListener("click", () => {
 
-        let textVal = document.getElementById("textVal")
+
+        let textVal = document.getElementById("textVal");
+
         courseName = textVal.value;
         showComments(courseName);
         showPoll(courseName);
+
     });
 
 
@@ -305,7 +303,6 @@ function showPoll(courseName) {
             let t_ppoll = 0;     // Total professor     
             let totaluserpoll = 0;
 
-            console.log(pollsarray);
 
             let a_wpoll = 0;     // Average Workload
             let a_gpoll = 0;     // Average Grading
@@ -330,21 +327,12 @@ function showPoll(courseName) {
             a_cpoll = t_cpoll / totaluserpoll;
             a_ppoll = t_ppoll / totaluserpoll;
 
-            console.log("Average Workload :" + a_wpoll);
-            console.log("Average Grading :" + a_gpoll);
-            console.log("Average Exams:" + a_epoll);
-            console.log("Average Content :" + a_cpoll);
-            console.log("Average Professor :" + a_ppoll);
-
 
             average_data = [a_wpoll, a_gpoll, a_epoll, a_cpoll, a_ppoll];
             chartdata.datasets[0].data = average_data;
             document.querySelector('.votecounter').innerHTML = totaluserpoll + " students voted";
 
             myChart.update();
-
-            console.log(chartdata.datasets[0].data);
-
 
         })
 }
@@ -388,11 +376,11 @@ let vidWidth = 300;
 let vidHeight = 250;
 
 function setup() {
-    const canvas = createCanvas(1200, 750);
+    const canvas = createCanvas(1400, 750);
     canvas.parent("video");
 
-}
 
+}
 
 function gotMineConnectOthers(myStream) {
 
@@ -414,12 +402,44 @@ function draw() {
 
     let row = 0; //for making a grid
     let col = 0;
+
+
+    let count = 0;
+
+    for (const i in allVideos) {
+        if (allVideos[i]) {
+            count++;
+        }
+    }
+
+    let pad = 50;
+
+    if(count == 1)
+    {
+        vidHeight = 550;
+        vidWidth = 800;
+        pad = 300;
+    }
+
+    else if ( count == 2)
+    {
+        vidHeight = 430;
+        vidWidth = 600;
+        pad = 80;
+    }
+    else 
+    {
+        vidHeight = 300;
+        vidWidth = 400;
+    }
+ 
+
     for (const i in allVideos) {
         if (allVideos[i]) {
 
-            image(allVideos[i], col * vidWidth, row * vidHeight, vidWidth, vidHeight);
+            image(allVideos[i], col * vidWidth + pad * (col + 1), row * vidHeight + pad * (row), vidWidth, vidHeight);
             col++;
-            if (col >= width / vidWidth) {
+            if (col >= 3) {
                 col = 0;
                 row++;
             }
@@ -430,13 +450,16 @@ function draw() {
 // We got a new stream!
 function gotOtherStream(stream, id) {
 
-    // This is just like a video/stream from createCapture(VIDEO)
-    otherVideo = stream;
-    otherVideo.size(vidWidth, vidHeight);
-    allVideos[id] = otherVideo;
-    otherVideo.hide();
 
-    //otherVideo.id and id are the same and unique identifiers
+        // This is just like a video/stream from createCapture(VIDEO)
+        otherVideo = stream;
+        otherVideo.size(vidWidth, vidHeight);
+        allVideos[id] = otherVideo;
+
+        otherVideo.hide();
+
+        //otherVideo.id and id are the same and unique identifiers
+
 }
 
 function gotDisconnect(id) {
@@ -446,13 +469,16 @@ function gotDisconnect(id) {
 window.addEventListener('load', () => {
 
     let joinBtn = document.getElementById('joinRoom');
-    console.log(joinBtn);
 
     joinBtn.addEventListener('click', showVideo);
 
     function showVideo() {
+
         let eachContainer = document.querySelector('.eachContainer');
         eachContainer.style.display = "none";
+
+        let searchContainer = document.querySelector('.search');
+        searchContainer.style.display = "none";
 
         let videoContainer = document.querySelector('.videoContainer');
         videoContainer.style.display = "flex";
@@ -461,16 +487,41 @@ window.addEventListener('load', () => {
         video.style.display = "flex";
 
         let courseHeading = document.querySelector('.courseHeadingVideo');
-        courseHeading.innerHTML = courseName;
-
-        let searchBar = document.querySelector('.search');
-        searchBar.style.marginTop = "-550px";
+        courseHeading.innerHTML = "Study Room : " + courseName;
 
 
         myVideo = createCapture(VIDEO, function (stream) {
             let p5l = new p5LiveMedia(this, "CAPTURE", stream, courseName)
+
+            /*
+            let url3 = "/video?selectedCourse=" + courseName;
+            let online = 0;
+            fetch(url3)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    //online = data.online;
+                })
+
+            let videoObject = {
+                "course": courseName,
+                "online": online
+            }
+            let videoObjectJSON = JSON.stringify(videoObject);
+            console.log(videoObjectJSON);
+
+            //Send the data to the server
+            fetch('/videoPost', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: videoObjectJSON
+            })
+                .then(res => res.json())
+                .then(data => { console.log(data) })
+
+            */
+
             id = stream.id;
-            console.log(id);
             p5l.on('stream', gotOtherStream);
             p5l.on('disconnect', gotDisconnect);
         }
@@ -479,7 +530,10 @@ window.addEventListener('load', () => {
         myVideo.size(vidWidth, vidHeight);
         myVideo.hide();
         allVideos[id] = myVideo;
+
+
     }
+
 
 });
 

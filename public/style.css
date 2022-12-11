@@ -24,31 +24,30 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 36px;
-    margin-top:-600px;
+    margin-top:-920px;
+    width:99%;
 }
 #video{
-    height:600px;
-    width:1000px;
+    max-width:fit-content;
     /*display: none;*/
     /*position: relative;*/
     /*top:-200px;*/
     display: none;
     justify-content: center;
     align-items: center;
+    max-width: fit-content;
 }
 .courseHeadingVideo{
-    font-size: 40px;
+    font-size: 30px;
     font-weight: bold;
     padding: 20px;
     height: 100px;
-    width: 100vh;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 20px;
     color: #fffffe;
-    margin-top: 50px;
 }
 
 body{
