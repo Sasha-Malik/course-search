@@ -1,5 +1,4 @@
 let socket = io();
-
 const labels = [
     'Workload',
     'Grading',
@@ -88,6 +87,8 @@ let courseName = "";
 
 window.addEventListener('load', () => {
 
+    scrollToTop();
+
     let globalText = "";
 
     window.history.pushState(null, null, window.location.href);
@@ -103,11 +104,11 @@ window.addEventListener('load', () => {
 
     socket.on('sdata', (data) => {
         if (data.comment == globalText) {
-            addMyMessage(data.comment);
+            addMyMessage(data.comment,data.profName);
         }
 
         else {
-            addMessage(data.comment);
+            addMessage(data.comment,data.profName);
         }
     });
     //myChart.defaults.global.legend.display = false
@@ -116,23 +117,56 @@ window.addEventListener('load', () => {
         .then(res => res.json())
         .then(data => {
 
-
             let container = document.querySelector(".courseWindow");
 
             data.courseArray.forEach(e => {
 
-                
+                //adding majors 
                 let child = document.createElement('button');
                 child.classList.add("course");
-                child.innerHTML = e;
+                //first entry is the major name
+                child.innerHTML = e[0];
+                let firstName = e[0];
 
                 child.addEventListener('click', () => {
+
+                    scrollToTop();
+
+                    //removing the majors
+                    let remChild = container.lastElementChild;
+                    while (remChild) {
+                        container.removeChild(remChild);
+                        remChild = container.lastElementChild;
+                    }
+
+                    //each course in a major
+                    e.forEach(course => {
+
+                        //first name is the major name
+                        if (course != firstName) {
+                            let childCourses = document.createElement('button');
+                            childCourses.classList.add("course");
+                            childCourses.innerHTML = course;
+                            container.appendChild(childCourses);
+                            //go to childs comment page
+                            childCourses.addEventListener('click', () => {
+                                courseName = childCourses.innerHTML;
+                                showComments(courseName);
+                                showPoll(courseName);
+                                scrollToTop();
+                            });
+                        }
+                    })
+
+                })
+
+                /*child.addEventListener('click', () => {
 
                     courseName = child.innerHTML;
                     showComments(courseName);
                     showPoll(courseName);
 
-                });
+                });*/
 
                 container.appendChild(child);
 
@@ -169,6 +203,14 @@ window.addEventListener('load', () => {
         updateScroll();
 
         let text = document.getElementById("textValComment");
+        let prof = document.getElementById("prof");
+        console.log(prof.value);
+
+        if(prof.value == "")
+            prof.value = "Prof : " + "unspecified";
+
+        else
+            prof.value = "Prof : " + prof.value;
 
         if (text.value != "") {
             globalText = text.value;
@@ -176,12 +218,15 @@ window.addEventListener('load', () => {
             let commentObj = {
                 "courseName": courseName,
                 "comment": text.value,
+                "profName": prof.value,
                 "updateAt": new Date()
             };
 
             socket.emit('data', commentObj);
         }
 
+        text.value = "";
+        prof.value = "";
     });
 
 
@@ -227,24 +272,47 @@ window.addEventListener('load', () => {
 
 });
 
-function addMessage(message) {
+function addMessage(message, profName) {
 
     let elem = document.createElement('div');
-    elem.innerHTML = message;
     elem.classList.add('comment');
+
+    let prof = document.createElement('p');
+    let comment = document.createElement('p');
+
+    prof.classList.add('profName');
+    prof.innerHTML = profName;
+
+    comment.classList.add('commentValue');
+    comment.innerHTML = message;
+
+    elem.appendChild(prof);
+    elem.appendChild(comment);
 
     let container = document.querySelector('.commentContainer');
     container.appendChild(elem);
 }
 
-function addMyMessage(message) {
+function addMyMessage(message,profName) {
 
     let elem = document.createElement('div');
-    elem.innerHTML = message;
     elem.classList.add('comment1');
+
+    let prof = document.createElement('p');
+    let comment = document.createElement('p');
+
+    prof.classList.add('profName');
+    prof.innerHTML = profName;
+
+    comment.classList.add('commentValue');
+    comment.innerHTML = message;
+
+    elem.appendChild(prof);
+    elem.appendChild(comment);
 
     let container = document.querySelector('.commentContainer');
     container.appendChild(elem);
+
 }
 
 function removeMessages() {
@@ -280,8 +348,10 @@ function showComments(courseName) {
         .then(data => {
 
             let arr = data.comments;
+            console.log(arr);
+
             arr.forEach(e => {
-                addMessage(e.comment);
+                addMessage(e.comment,e.profName);
             });
 
         })
@@ -337,6 +407,9 @@ function showPoll(courseName) {
         })
 }
 
+function scrollToTop() {
+    window.scrollTo(0, 0);
+}
 
 function openpopup() {
     let popupwindow = document.querySelector('.Thankyoupopup');
@@ -378,8 +451,6 @@ let vidHeight = 250;
 function setup() {
     const canvas = createCanvas(1400, 750);
     canvas.parent("video");
-
-
 }
 
 function gotMineConnectOthers(myStream) {
@@ -397,7 +468,7 @@ function gotMineConnectOthers(myStream) {
 
 
 function draw() {
-    background(22, 22, 26);
+    background(36,38,41);
     stroke(255);
 
     let row = 0; //for making a grid
@@ -414,25 +485,36 @@ function draw() {
 
     let pad = 50;
 
-    if(count == 1)
-    {
+    if (count == 1) {
         vidHeight = 550;
         vidWidth = 800;
         pad = 300;
+        let endCall = document.querySelector(".buttonContainer");
+        endCall.style.marginTop = "-150px";
     }
 
-    else if ( count == 2)
-    {
+    else if (count == 2) {
         vidHeight = 430;
         vidWidth = 600;
         pad = 80;
+        let endCall = document.querySelector(".buttonContainer");
+        endCall.style.marginTop = "-210px";
     }
-    else 
+
+    else if (count == 3)
     {
         vidHeight = 300;
         vidWidth = 400;
+        let endCall = document.querySelector(".buttonContainer");
+        endCall.style.marginTop = "-210px";
     }
- 
+    else {
+        vidHeight = 300;
+        vidWidth = 400;
+        let endCall = document.querySelector(".buttonContainer");
+        endCall.style.marginTop = "-60px";
+    }
+
 
     for (const i in allVideos) {
         if (allVideos[i]) {
@@ -447,19 +529,16 @@ function draw() {
     }
 }
 
+
 // We got a new stream!
 function gotOtherStream(stream, id) {
 
-
-        // This is just like a video/stream from createCapture(VIDEO)
-        otherVideo = stream;
-        otherVideo.size(vidWidth, vidHeight);
-        allVideos[id] = otherVideo;
-
-        otherVideo.hide();
-
-        //otherVideo.id and id are the same and unique identifiers
-
+    // This is just like a video/stream from createCapture(VIDEO)
+    otherVideo = stream;
+    otherVideo.size(vidWidth, vidHeight);
+    allVideos[id] = otherVideo;
+    otherVideo.hide();
+    //otherVideo.id and id are the same and unique identifiers
 }
 
 function gotDisconnect(id) {
@@ -473,6 +552,13 @@ window.addEventListener('load', () => {
     joinBtn.addEventListener('click', showVideo);
 
     function showVideo() {
+
+        window.scrollTo(0, 255);
+
+        let endCall = document.querySelector(".endCall");
+        endCall.addEventListener('click',() =>{
+            window.location.reload(true);
+        });
 
         let eachContainer = document.querySelector('.eachContainer');
         eachContainer.style.display = "none";
@@ -489,53 +575,48 @@ window.addEventListener('load', () => {
         let courseHeading = document.querySelector('.courseHeadingVideo');
         courseHeading.innerHTML = "Study Room : " + courseName;
 
-
-        myVideo = createCapture(VIDEO, function (stream) {
+        let constraints = {audio: true, video: true};
+        myVideo = createCapture(constraints, function (stream) {
             let p5l = new p5LiveMedia(this, "CAPTURE", stream, courseName)
 
-            /*
-            let url3 = "/video?selectedCourse=" + courseName;
-            let online = 0;
-            fetch(url3)
-                .then(res => res.json())
-                .then(data => {
-                    console.log(data);
-                    //online = data.online;
-                })
 
-            let videoObject = {
-                "course": courseName,
-                "online": online
-            }
-            let videoObjectJSON = JSON.stringify(videoObject);
-            console.log(videoObjectJSON);
+            let mute = document.querySelector('.mute');
+            let voice = document.querySelector('.voice');
 
-            //Send the data to the server
-            fetch('/videoPost', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: videoObjectJSON
+            mute.addEventListener('click',()=>{
+                voice.style.display = "flex";
+                mute.style.display = "none"; 
+                let audio = stream.getTracks().find(track=>track.kind=="audio");
+                audio.enabled = true;
             })
-                .then(res => res.json())
-                .then(data => { console.log(data) })
+        
+            voice.addEventListener('click',()=>{
+                mute.style.display = "flex";
+                voice.style.display = "none";
+                console.log(stream);
+                let audio = stream.getTracks().find(track=>track.kind=="audio");
+                audio.enabled = false;
+            })
 
-            */
-
+     
             id = stream.id;
             p5l.on('stream', gotOtherStream);
             p5l.on('disconnect', gotDisconnect);
         }
+        
         );
 
+        
+        
+        myVideo.elt.muted = true;
         myVideo.size(vidWidth, vidHeight);
         myVideo.hide();
-        allVideos[id] = myVideo;
-
-
+        allVideos['Me'] = myVideo;
     }
 
-
 });
+
+
 
 
 // This is a test of the p5LiveMedia webrtc library and associated service.

@@ -19,7 +19,7 @@ let db2 = new Datastore("poll.db");
 let db3 = new Datastore("video.db");
 
 let courseList = ["Algorithms", "Data Structures", "Calculus", "Markets", "Connections Lab", "Linear Algebra", "Intro to CS", "Math-1000", "Intro to Logic", "Discrete Math", "FYWS", "Mutivariable Calculus", "Data and Society", "Data Analysis", "Computer Networks", "Operating Systems", "Computer System Organization"];
-let courses = [["Computer Science","Algorithms", "Data Structures"],["Economics","Markets"]];
+let courses = [["Computer Science","Intro to Computer Science","Discrete Math","Algorithms", "Data Structures","Computer System Organization","Computer Networks", "Operating Systems","Softaware Engineering", "Database Systems", "Computer Graphics","Natural Language Processing", "Computational Geometry","Computer Security"],["Economics","Markets","Intermediate Microeconomics","Intermediate Macroeconomics","Data Analysis","Economics of Imperfect Markets","Economic Growth","Economic Policy","Econometrics","Behavioral Economics","Experimental Economics","Economic Rationality and Behavior","Advanced Econometrics"],["Applied Mathematics","Foundations of Mathematics","Math-1000A","Math-1000B","Integral Calculus","Calculus","Mutivariable Calculus","Fundamentals of Linear Algebra","Fundamentals of Ordinary Differential Equations","Linear Algebra","Ordinary Differential Equations","Probability and Statistics","Abstract Algebra 1","Analysis 1"],["Interactive Media","Introduction to Interactive Media","Communications Lab","Connections Lab","Performing Robots","Experiential Video Art","Software Art: Image","Software Art: Text","Decoding Nature","Games and Play","Software Art: ASCII to Algorithm","Live Coding","Sensors, Body, & Motion","Politics of Code","Alternate Realities","A.rt I.ntel","Robota Psyche","Nature of Code","Super-human"],["Philosophy"],["Political Science"],["Computer Engineering"],["Physics"],["Psychology"],["Creative Writing"],["Biology"],["General Engineering"],["Civil Engineering"],["Mechanical Engineering"],["Electrical Engineering"],["Chemistry"],["Business, Organizations and Society"],["Legal Studies"],["History"],["Social Research & Public Policy"],["Theater"],["Arab Crossroads Studies"],["Film & New Media"]];
 
 
 db.loadDatabase();
@@ -50,7 +50,7 @@ io = new io.Server(server);
 
 
 app.get('/courses', (req, res) => {
-    res.json({ courseArray: courseList });
+    res.json({ courseArray: courses });
 });
 
 app.get('/comments', (req, res) => {
