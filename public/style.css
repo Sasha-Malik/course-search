@@ -4,7 +4,7 @@
 }
 
 #joinRoom{
-    width: 150px;
+    width: 210px;
     padding: 10px 0px;
     background-color: #7f5af0;
     border: 0;
@@ -563,6 +563,8 @@ body{
     align-items: center;
     justify-content: center;
     padding: 30px;
+    gap:30px;
+  
 
 }
 

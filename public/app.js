@@ -606,8 +606,7 @@ window.addEventListener('load', () => {
         
         );
 
-        
-        
+           
         myVideo.elt.muted = true;
         myVideo.size(vidWidth, vidHeight);
         myVideo.hide();
