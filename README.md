@@ -1,4 +1,4 @@
-# Final Project : Course Search
+# Course Search
 
 Link : https://course-search-project.glitch.me/
 
@@ -70,8 +70,3 @@ Socket.io was used so that the comments are displayed in real time, making it st
 
 1. A verification process for logging in.
 2. A way to moderate the comments and the process of addition of new courses.
-
-## Sasha
-
-One of my roles was creating the layout of the entire web application. Using javaScript I made the courses appear in a container as cards, so clicking one of the cards hides the container of the cards and displays the poll container and the container to add comments. I made it so that upon reloading or by clicking the website logo, the home page with the card container shows up. I also set up the Nedb database and created the search bar that enables the user to search the required courses by fetching from the database. I also implemented the get requests that allows the user to see all the comments of a course when the user opens a course. I set up the socket.io framework to make the comment section work in real time. So, multiple get requests are not required when the user adds a comment and other users can reply in real time. I made the comment section where users can post their reviews. Added multiple effects like hover. After that I styled the entire web application using css to fit the theme of the university. Styling the web application to make it look minimalistic and clean for a streamlined experience was one of the tougher parts. Additionally, I made a filter option where courses are shown by clicking on majors and added the option of professor specific comments. I also implemented the feature of course specific study focus rooms where students can join and collaborate together.
-.
